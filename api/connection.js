@@ -3,7 +3,7 @@ const sql = require('mssql');
 const config = {
   user: 'sa',
   password: 'f1berdata',
-  server: '172.20.10.2',
+  server: '27.61.60.175',
   port: 1433,
   database: 'THE_SPOT',
   options: {
