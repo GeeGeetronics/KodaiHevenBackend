@@ -4,13 +4,15 @@
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "checkJs": false,
     "jsx": "react-native",
     "noEmit": true,
     "skipLibCheck": true,
     "moduleResolution": "node",
-    "types": ["jest", "react-native"]
+    "types": ["jest", "react-native"],
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
   "include": [
     "App.tsx",

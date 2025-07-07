@@ -2,4 +2,3 @@ const BASE_URL = 'https://kodaiheaven-b0g6adagdrgheybn.canadacentral-01.azureweb
 export default {
   BASE_URL,
 };    
-
