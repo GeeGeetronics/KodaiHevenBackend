@@ -3,13 +3,13 @@ const sql = require('mssql');
 const config = {
   user: 'sa',
   password: 'f1berdata',
-  server: '103.98.63.67',
+  server: '192.168.1.6',
   port: 1433,
   database: 'THE_SPOT',
   options: {
     encrypt: false,
     trustServerCertificate: true,
-  },
+  },s
 };
 
 let pool;
