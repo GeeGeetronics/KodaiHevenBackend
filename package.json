@@ -1,74 +1,33 @@
 {
-  "name": "sample",
-  "version": "0.0.1",
+  "name": "kodaiheaven-backend",
+  "version": "1.0.0",
   "private": true,
+  "main": "api/loginApi.js",
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
-    "lint": "eslint .",
-    "start": "react-native start",
-    "test": "jest",
-    "backend": "node api/loginApi.js"
+    "start": "node api/loginApi.js"
   },
   "dependencies": {
-    "@react-native-community/datetimepicker": "^8.4.1",
-    "@react-native-picker/picker": "^2.11.0",
-    "@react-navigation/native": "^7.1.6",
-    "@react-navigation/stack": "^7.2.10",
-    "axios": "^1.9.0",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
-    "mssql": "^11.0.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-native": "^0.79.1",
-    "react-native-bluetooth-escpos-printer": "^0.0.5",
-    "react-native-gesture-handler": "^2.25.0",
-    "react-native-linear-gradient": "^2.8.3",
-    "react-native-paper": "^5.13.5",
-    "react-native-safe-area-context": "^5.4.0",
-    "react-native-screens": "^4.11.1",
-    "react-native-tcp-socket": "^6.3.0",
-    "react-native-vector-icons": "^10.2.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.25.2",
-    "@babel/preset-env": "^7.25.3",
-    "@babel/runtime": "^7.25.0",
-    "@react-native-community/cli": "18.0.0",
-    "@react-native-community/cli-platform-android": "18.0.0",
-    "@react-native-community/cli-platform-ios": "18.0.0",
-    "@react-native/babel-preset": "0.79.1",
-    "@react-native/eslint-config": "0.79.1",
-    "@react-native/metro-config": "0.79.1",
-    "@react-native/typescript-config": "0.79.1",
-    "@types/jest": "^29.5.13",
-    "@types/react": "^19.1.8",
-    "@types/react-native": "^0.72.8",
-    "@types/react-test-renderer": "^19.0.0",
-    "eslint": "^8.19.0",
-    "jest": "^29.6.3",
-    "prettier": "2.8.8",
-    "react-test-renderer": "19.0.0",
-    "typescript": "^5.0.4"
+    "mssql": "^11.0.1"
   },
   "engines": {
     "node": ">=18"
   },
-  "description": "This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).",
-  "main": "index.js",
+  "description": "Backend API for KodaiHeaven using Express and SQL Server.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anusuya1441/KodaiHevenBackend.git"
+    "url": "git+https://github.com/GeeGeetronics/KodaiHevenBackend.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/anusuya1441/KodaiHevenBackend/issues"
+    "url": "https://github.com/GeeGeetronics/KodaiHevenBackend/issues"
   },
-  "homepage": "https://github.com/anusuya1441/KodaiHevenBackend#readme"
+  "homepage": "https://github.com/GeeGeetronics/KodaiHevenBackend#readme",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/react-native": "^0.72.8"
+  }
 }

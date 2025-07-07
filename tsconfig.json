@@ -1,3 +1,23 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json"
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "checkJs": false,
+    "jsx": "react-native",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "types": ["jest", "react-native"]
+  },
+  "include": [
+    "App.tsx",
+    "**/*.tsx",
+    "api/**/*.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
