@@ -1,0 +1,7 @@
+﻿node_modules/
+build/
+dist/
+*.zip
+*.log
+.env
+android/app/.cxx/

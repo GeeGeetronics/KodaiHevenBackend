@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/c558f1d2-d044-4593-8a20-bb7508b18e08/resourceGroups/KodaiHeaven_group/providers/Microsoft.Web/sites/KodaiHeaven",
+    "appService.deploySubpath": "."
+}
