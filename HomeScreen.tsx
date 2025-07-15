@@ -85,6 +85,12 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     groupedItems.push(items.slice(i, i + 2));
   }
 
+  // Group radio options into 2 per row
+  const groupedRadioOptions: string[][] = [];
+  for (let i = 0; i < radioOptions.length; i += 2) {
+    groupedRadioOptions.push(radioOptions.slice(i, i + 2));
+  }
+
   const selectItem = (index: number) => {
     setSelectedItem(index);
   };
@@ -98,18 +104,25 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               THE KODAI HEAVEN
             </Text>
           </View>
-          
 
-          <View style={styles.infoContainer}>
-            {radioOptions.map((item, index) => (
-              <View key={index} style={styles.radioButtonContainer}>
-                <RadioButton
-                  value={index.toString()}
-                  status={selectedItem === index ? 'checked' : 'unchecked'}
-                  onPress={() => selectItem(index)}
-                  color={getColor(index)}
-                />
-                <Text style={{ color: getColor(index), fontSize: isTablet ? 18 : 16 }}>{item}</Text>
+          {/* Two-row radio buttons */}
+          <View style={styles.radioGroupContainer}>
+            {groupedRadioOptions.map((row, rowIndex) => (
+              <View key={rowIndex} style={styles.radioRow}>
+                {row.map((item, index) => {
+                  const realIndex = rowIndex * 2 + index;
+                  return (
+                    <View key={realIndex} style={styles.radioItem}>
+                      <RadioButton
+                        value={realIndex.toString()}
+                        status={selectedItem === realIndex ? 'checked' : 'unchecked'}
+                        onPress={() => selectItem(realIndex)}
+                        color={getColor(realIndex)}
+                      />
+                      <Text style={styles.radioText}>{item}</Text>
+                    </View>
+                  );
+                })}
               </View>
             ))}
           </View>
@@ -152,7 +165,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               key={rowIndex}
               style={[
                 styles.row,
-                rowIndex === 0 && { marginTop: 20 }, // ✅ Extra space above first row
+                rowIndex === 0 && { marginTop: 20 },
               ]}
             >
               {row.map((item, index) => (
@@ -210,26 +223,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#840214',
   },
-  subTitle: {
-    position: 'absolute',
-    top: 20,
-    left: 2,
-    fontWeight: '600',
-    color: 'black',
-  },
-  infoContainer: {
+  radioGroupContainer: {
     marginTop: 80,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
     paddingHorizontal: 10,
-    alignItems: 'center',
   },
-  radioButtonContainer: {
+  radioRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  radioItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 16,
-    marginBottom: 10,
+    width: '48%',
+    flexWrap: 'wrap',
+  },
+  radioText: {
+    flexShrink: 1,
+    fontSize: 16,
+    color: '#840214',
   },
   roomPickerSection: {
     marginTop: 10,

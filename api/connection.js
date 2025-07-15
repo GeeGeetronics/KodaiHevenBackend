@@ -3,9 +3,9 @@ const sql = require('mssql');
 const config = {
   user: 'sa',
   password: 'f1berdata',
-  server: '103.98.63.67',
+  server: '103.125.154.246',
   port: 1433,
-  database: 'THE_SPOT',
+  database: 'KODAI',
   options: {
     encrypt: false,
     trustServerCertificate: true,

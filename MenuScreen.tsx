@@ -11,7 +11,6 @@ import { useSelectedItems } from './SelectedItemsContext';
 import ngrok from './api/ngrok';
 import { useUser } from './UserContext';
 
-
 type MenuItem = {
   name: string;
   price: number;
@@ -28,12 +27,8 @@ const MenuScreen = () => {
 
   const { selectedItems, setSelectedItems, clearSelectedItems } = useSelectedItems();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const { userId } = useUser(); // ✅ Use inside component
-
+  const { userId } = useUser();
   const { width } = useWindowDimensions();
-
-   // ✅ ADD THIS LINE TO DEBUG userId
-  console.log('👤 userId in MenuScreen:', userId);
 
   useEffect(() => {
     fetch(`${ngrok.BASE_URL}/api/menu_items/${encodeURIComponent(selectedItem)}`)
@@ -98,7 +93,7 @@ const MenuScreen = () => {
     }
   };
 
-   const saveData = () => {
+  const saveData = () => {
     if (!userId) {
       Alert.alert('Error', 'User not logged in. Please login again.');
       return;
@@ -108,11 +103,9 @@ const MenuScreen = () => {
       menuSection: selectedItem,
       radioOption: selectedRadio,
       selectedRoom,
-      userId, // ✅ Passed correctly
+      userId,
       items: selectedItems.map(({ sno, ...rest }) => rest),
     };
-
-    console.log('📦 Save Payload:', payload);
 
     fetch(`${ngrok.BASE_URL}/api/save_menu_items`, {
       method: 'POST',
@@ -121,7 +114,6 @@ const MenuScreen = () => {
     })
       .then(res => res.json())
       .then(response => {
-        console.log('✅ Server response:', response);
         if (response.success) {
           Alert.alert('Saved successfully!');
           clearSelectedItems();
@@ -134,40 +126,34 @@ const MenuScreen = () => {
         Alert.alert('Error saving data');
       });
   };
+
   const printData = () => {
-  if (!userId) {
-    Alert.alert('Error', 'User not logged in. Please login again.');
-    return;
-  }
+    if (!userId) {
+      Alert.alert('Error', 'User not logged in. Please login again.');
+      return;
+    }
 
-  console.log('🧾 Sending print request with userId:', userId);
-
-  fetch(`${ngrok.BASE_URL}/api/print_kot`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      userId, // ✅ Send userId
-    }),
-  })
-    .then(async (res) => {
-      const data = await res.json();
-      console.log('📥 Print KOT Response:', data);
-
-      if (res.ok && data.success) {
-        navigation.navigate('KOTPrintScreen', {
-          kotNo: data.kotNo,
-          items: data.items,
-        });
-      } else {
-        Alert.alert('Print failed', data.message || 'No KOT found for this user.');
-      }
+    fetch(`${ngrok.BASE_URL}/api/print_kot`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId }),
     })
-    .catch(err => {
-      console.error('❌ Print error:', err);
-      Alert.alert('Print Error', err.message || 'Something went wrong');
-    });
-};
-
+      .then(async (res) => {
+        const data = await res.json();
+        if (res.ok && data.success) {
+          navigation.navigate('KOTPrintScreen', {
+            kotNo: data.kotNo,
+            items: data.items,
+          });
+        } else {
+          Alert.alert('Print failed', data.message || 'No KOT found for this user.');
+        }
+      })
+      .catch(err => {
+        console.error('Print error:', err);
+        Alert.alert('Print Error', err.message || 'Something went wrong');
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -245,7 +231,7 @@ const MenuScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10, backgroundColor: '#ffb665',},
+  container: { flex: 1, padding: 10, backgroundColor: '#ffb665' },
   title: { fontSize: 20, fontWeight: 'bold', color: '#840214', marginBottom: 10 },
   splitContainer: { flexDirection: 'row', flex: 1 },
   leftColumn: { width: '45%', borderRightWidth: 1, borderColor: '#ccc', paddingRight: 5 },

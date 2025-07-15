@@ -84,14 +84,12 @@ app.get('/api/table-names', async (req, res) => {
 app.post('/api/save_menu_items', async (req, res) => {
   const { menuSection, radioOption, selectedRoom, items, userId } = req.body;
 
-  // Log incoming data
   console.log('▶️ Full req.body:', req.body);
   console.log('🔄 Incoming save request payload:', {
     menuSection, radioOption, selectedRoom, userId,
     itemsLength: Array.isArray(items) ? items.length : 'invalid'
   });
 
-  // Validate input
   if (!menuSection || !radioOption || !selectedRoom || !Array.isArray(items) || items.length === 0 || !userId) {
     return res.status(400).json({ success: false, message: 'Invalid input' });
   }
@@ -106,7 +104,8 @@ app.post('/api/save_menu_items', async (req, res) => {
     const kotNoResult = await kotRequest.query('SELECT ISNULL(MAX(KOT_No), 0) AS maxKotNo FROM KOT_NEW');
     const newKotNo = kotNoResult.recordset[0].maxKotNo + 1;
 
-    // Insert each item
+    let totalGross = 0;
+
     for (const item of items) {
       const request = new sql.Request(transaction);
       request.input('menuSection', sql.VarChar, menuSection);
@@ -121,6 +120,8 @@ app.post('/api/save_menu_items', async (req, res) => {
       request.input('kotNo', sql.Int, newKotNo);
       request.input('userId', sql.Int, userId);
 
+      totalGross += item.total || 0;
+
       await request.query(`
         INSERT INTO KOT_NEW
           (Menu_Section, Radio_Option, Room_No, ItemCode, Description, Qty, Price, Total, Remarks, KOT_No, User_ID)
@@ -129,14 +130,61 @@ app.post('/api/save_menu_items', async (req, res) => {
       `);
     }
 
-    // Commit transaction
+    // Now insert into Table_Order_Master
+    const masterRequest = new sql.Request(transaction);
+    masterRequest.input('Client_Id', sql.VarChar, 'CL1');
+    masterRequest.input('Table_Code', sql.VarChar, '');
+    masterRequest.input('Sale_Date', sql.DateTime, new Date());
+    masterRequest.input('Sale_Type', sql.VarChar, '1');
+    masterRequest.input('Sale_Table_No', sql.VarChar, selectedRoom);
+    masterRequest.input('Sale_Table_Covers', sql.Int, 1);
+    masterRequest.input('Sale_Captain_ID', sql.VarChar, '1');
+    masterRequest.input('Sale_Amount_Gross', sql.Decimal(10, 2), totalGross);
+    masterRequest.input('Sale_Amount_Exchange', sql.Decimal(10, 2), 48);
+    masterRequest.input('Sale_Amount_Roundoff', sql.Decimal(10, 2), 48);
+    masterRequest.input('Sale_Overall_Discount', sql.Decimal(10, 2), 0);
+    masterRequest.input('Sale_Amount_Nett', sql.Decimal(10, 2), totalGross);
+    masterRequest.input('Sale_Amount_Received', sql.Decimal(10, 2), totalGross);
+    masterRequest.input('Sale_BillCancelled', sql.Int, 0);
+    masterRequest.input('Company_Code', sql.Int, 1);
+    masterRequest.input('Bill_Printed', sql.Int, 48);
+    masterRequest.input('System_Number', sql.VarChar, 'S1');
+    masterRequest.input('Employee_Code', sql.VarChar, '1');
+    masterRequest.input('Cash_Received', sql.Decimal(10, 2), 0);
+    masterRequest.input('Customer_Code', sql.Int, 1);
+    masterRequest.input('Due_Date', sql.DateTime, new Date());
+    masterRequest.input('Total_Sale_BaseAmount', sql.Decimal(10, 2), totalGross);
+    masterRequest.input('Total_Sale_TaxAmount', sql.Decimal(10, 2), 0);
+    masterRequest.input('ServiceTax_Amount', sql.Decimal(10, 2), 48);
+    masterRequest.input('REMARKS', sql.VarChar, 'OK');
+    masterRequest.input('SaleCustomer_Name', sql.VarChar, '');
+    masterRequest.input('Customer_CellPhoneNumber', sql.VarChar, '');
+    masterRequest.input('token_no', sql.VarChar, 'D');
+
+    await masterRequest.query(`
+      INSERT INTO Table_Order_Master
+      (Client_Id, Table_Code, Sale_Date, Sale_Type, Sale_Table_No, Sale_Table_Covers, Sale_Captain_ID,
+       Sale_Amount_Gross, Sale_Amount_Exchange, Sale_Amount_Roundoff, Sale_Overall_Discount,
+       Sale_Amount_Nett, Sale_Amount_Received, Sale_BillCancelled, Company_Code, Bill_Printed,
+       System_Number, Employee_Code, Cash_Received, Customer_Code, Due_Date,
+       Total_Sale_BaseAmount, Total_Sale_TaxAmount, ServiceTax_Amount, REMARKS,
+       SaleCustomer_Name, Customer_CellPhoneNumber, token_no)
+      VALUES
+      (@Client_Id, @Table_Code, @Sale_Date, @Sale_Type, @Sale_Table_No, @Sale_Table_Covers, @Sale_Captain_ID,
+       @Sale_Amount_Gross, @Sale_Amount_Exchange, @Sale_Amount_Roundoff, @Sale_Overall_Discount,
+       @Sale_Amount_Nett, @Sale_Amount_Received, @Sale_BillCancelled, @Company_Code, @Bill_Printed,
+       @System_Number, @Employee_Code, @Cash_Received, @Customer_Code, @Due_Date,
+       @Total_Sale_BaseAmount, @Total_Sale_TaxAmount, @ServiceTax_Amount, @REMARKS,
+       @SaleCustomer_Name, @Customer_CellPhoneNumber, @token_no)
+    `);
+
     await transaction.commit();
 
-    console.log(`✅ Saved KOT No: ${newKotNo}`);
-    res.json({ success: true, message: `Data saved with KOT_No ${newKotNo}` });
+    console.log(`✅ Saved KOT No: ${newKotNo} and inserted Table_Order_Master`);
+    res.json({ success: true, message: `Saved with KOT_No ${newKotNo}` });
 
   } catch (err) {
-    console.error('❌ Error saving menu items:', err);
+    console.error('❌ Error saving:', err);
     res.status(500).json({ success: false, message: 'Database error', error: err.message });
   }
 });
