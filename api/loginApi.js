@@ -42,7 +42,7 @@ app.get('/api/menu_items', async (req, res) => {
   }
 });
 
-// ✅ Menu by section
+// ✅ Menu by section adding
 app.get('/api/menu_items/:section', async (req, res) => {
   const { section } = req.params;
   try {
