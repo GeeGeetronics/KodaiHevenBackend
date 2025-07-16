@@ -101,7 +101,7 @@ app.post('/api/save_menu_items', async (req, res) => {
 
     // Get new KOT Number
     const kotRequest = new sql.Request(transaction);
-    const kotNoResult = await kotRequest.query('SELECT ISNULL(MAX(KOT_No), 0) AS maxKotNo FROM KOT_NEW');
+    const kotNoResult = await kotRequest.query('SELECT ISNULL(MAX(CAST(KOT_No AS INT)), 0) AS maxKotNo FROM KOT_NEW');
     const newKotNo = kotNoResult.recordset[0].maxKotNo + 1;
 
     let totalGross = 0;
